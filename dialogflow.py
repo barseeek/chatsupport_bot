@@ -37,7 +37,8 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
             )
         )
         general_logger.debug("Fulfillment text: {}\n".format(query_result.fulfillment_text))
-        return query_result.fulfillment_text
+
+        return query_result
 
 
 def create_api_key(project_id: str, suffix: str) -> Key:

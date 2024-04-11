@@ -10,7 +10,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 env = environs.Env()
 env.read_env()
 
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = env.str('LANGUAGE_CODE')
 PROJECT_ID = read_credentials(env.str('GOOGLE_APPLICATION_CREDENTIALS'))['quota_project_id']
 CHAT_ID = env.str('TELEGRAM_CHAT_ID')
 
@@ -20,7 +20,8 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def echo(update: Update, context: CallbackContext) -> None:
-    message_text = detect_intent_texts(PROJECT_ID, CHAT_ID, update.message.text, LANGUAGE_CODE)
+    general_logger.info('Получено сообщение в tg "{}" от {}'.format(update.message.text, update.effective_chat.id))
+    message_text = detect_intent_texts(PROJECT_ID, CHAT_ID, update.message.text, LANGUAGE_CODE).fulfillment_text
     update.message.reply_text(message_text)
 
 
