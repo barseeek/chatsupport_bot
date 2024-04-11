@@ -31,7 +31,7 @@ def main():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
     updater.start_polling()
-    general_logger.info('DialogFlow бот запущен')
+    general_logger.info('DialogFlow TG бот запущен')
 
     updater.idle()
 
