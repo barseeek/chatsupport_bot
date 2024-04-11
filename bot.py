@@ -1,12 +1,18 @@
 import logging
 
 import environs
-from log import TelegramLogsHandler
+from dialogflow import create_api_key, detect_intent_texts, read_credentials
+from log import general_logger
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 
-logger = logging.getLogger(__name__)
+env = environs.Env()
+env.read_env()
+
+LANGUAGE_CODE = 'ru-RU'
+PROJECT_ID = read_credentials(env.str('GOOGLE_APPLICATION_CREDENTIALS'))['quota_project_id']
+CHAT_ID = env.str('TELEGRAM_CHAT_ID')
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -14,24 +20,18 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def echo(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(update.message.text)
+    message_text = detect_intent_texts(PROJECT_ID, CHAT_ID, update.message.text, LANGUAGE_CODE)
+    update.message.reply_text(message_text)
 
 
 def main():
-    env = environs.Env()
-    env.read_env()
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        level=env.str('LOG_LEVEL', 'INFO'))
-    chat_id = env.str('TELEGRAM_CHAT_ID')
-    log_bot_token = env.str('TELEGRAM_LOG_BOT_TOKEN')
-    logger.addHandler(TelegramLogsHandler(chat_id, log_bot_token))
-
+    create_api_key(PROJECT_ID, CHAT_ID)
     updater = Updater(env.str('TELEGRAM_BOT_TOKEN'))
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
     updater.start_polling()
-    logger.info('Бот запущен')
+    general_logger.info('DialogFlow бот запущен')
 
     updater.idle()
 
