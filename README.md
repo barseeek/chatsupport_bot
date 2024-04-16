@@ -34,6 +34,31 @@
     ```   
 
 ## Как настроить
+### Обучение бота
+С помощью скрипта ```learning.py``` можно обучать чат-бота, считывая фразы из JSON-файла и используя их для создания намерений(Intents) в проекте Dialogflow.
+Пример файла questions.json, используемого для обучения:
+```json
+{
+    "theme1": {
+       "questions": [
+       "What is your name?",
+       "Who are you?"
+       ],
+    "answer": "I am a chatbot."
+    },
+    "theme2": {
+       "questions": [
+       "What do you do?",
+       "Tell me more about your functions."
+       ],
+    "answer": "I can help answer your questions."
+    }
+}
+```
+Запустим скрипт для обучения, указав в качестве параметра путь к файлу с данными для обучения (по умолчанию ```questions.json```):
+```bash
+python learning.py -f path/to/your/file.json
+```
 ### Файл учетных записей Google для Dialogflow:
 
 Для взаимодействия с API Dialogflow, вам необходимо создать и настроить файл с ключами Google Cloud. Вот пример файла учетных данных, который следует использовать:
