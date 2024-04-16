@@ -11,7 +11,7 @@ from log import TelegramLogsHandler
 logger = logging.getLogger('bot')
 
 
-def echo(event, vk_api, project_id, language_code):
+def reply_to_user(event, vk_api, project_id, language_code):
     logger.info('Пришло новое сообщение в VK "{}" от {}'.format(event.text, event.user_id))
     query_result = detect_intent_texts(project_id, event.user_id, event.text, language_code)
     message = query_result.fulfillment_text

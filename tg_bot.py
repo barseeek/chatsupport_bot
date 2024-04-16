@@ -14,7 +14,7 @@ def start(update: Update, context: CallbackContext) -> None:
     context.bot.send_message(chat_id=update.effective_chat.id, text='Здравствуйте')
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def reply_to_user(update: Update, context: CallbackContext) -> None:
     logger.info('Получено сообщение в tg "{}" от {}'.format(update.message.text, update.effective_chat.id))
     message_text = detect_intent_texts(PROJECT_ID, CHAT_ID, update.message.text, LANGUAGE_CODE).fulfillment_text
     update.message.reply_text(message_text)
