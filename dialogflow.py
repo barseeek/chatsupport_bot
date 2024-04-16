@@ -3,13 +3,15 @@ import logging
 
 from environs import Env
 from google.cloud import api_keys_v2
+from google.cloud import dialogflow
 from google.cloud.api_keys_v2 import Key
 from google.cloud import dialogflow
 
-from log import general_logger
+
+logger = logging.getLogger('bot')
 
 
-def detect_intent_texts(project_id, session_id, texts, language_code):
+def detect_intent_texts(project_id, session_id, text, language_code):
     """Returns the result of detect intent with texts as inputs.
 
     Using the same `session_id` between requests allows continuation
@@ -17,28 +19,24 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
 
     session_client = dialogflow.SessionsClient()
     session = session_client.session_path(project_id, session_id)
-    print("Session path: {}\n".format(session))
-    if isinstance(texts, str):
-        texts = [texts]
-    for text in texts:
-        text_input = dialogflow.TextInput(text=text, language_code=language_code)
-        query_input = dialogflow.QueryInput(text=text_input)
-        query_result = session_client.detect_intent(
-            request={
-                "session": session,
-                "query_input": query_input
-            }
-        ).query_result
-        general_logger.debug("Query text: {}".format(query_result.query_text))
-        general_logger.debug(
-            "Detected intent: {} (confidence: {})\n".format(
-                query_result.intent.display_name,
-                query_result.intent_detection_confidence,
-            )
+    text_input = dialogflow.TextInput(text=text, language_code=language_code)
+    query_input = dialogflow.QueryInput(text=text_input)
+    query_result = session_client.detect_intent(
+        request={
+            "session": session,
+            "query_input": query_input
+        }
+    ).query_result
+    logger.debug("Query text: {}".format(query_result.query_text))
+    logger.debug(
+        "Detected intent: {} (confidence: {})\n".format(
+            query_result.intent.display_name,
+            query_result.intent_detection_confidence,
         )
-        general_logger.debug("Fulfillment text: {}\n".format(query_result.fulfillment_text))
+    )
+    logger.debug("Fulfillment text: {}\n".format(query_result.fulfillment_text))
 
-        return query_result
+    return query_result
 
 
 def create_api_key(project_id: str, suffix: str) -> Key:
@@ -77,7 +75,6 @@ def create_api_key(project_id: str, suffix: str) -> Key:
 
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
     """Create an intent of the given intent type."""
-    from google.cloud import dialogflow
 
     intents_client = dialogflow.IntentsClient()
 
@@ -108,4 +105,3 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
 def read_credentials(path):
     with open(path, 'r') as file:
         return json.load(file)
-
