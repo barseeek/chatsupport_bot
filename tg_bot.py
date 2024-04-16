@@ -25,7 +25,7 @@ def main():
     updater = Updater(env.str('TELEGRAM_BOT_TOKEN'))
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, reply_to_user))
     updater.start_polling()
     logger.info('DialogFlow TG бот запущен')
     updater.idle()

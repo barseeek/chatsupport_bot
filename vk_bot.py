@@ -35,7 +35,7 @@ def main():
     logger.info('DialogFlow VK бот запущен')
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-            echo(event, vk_get_api, project_dialogflow_id, language_code)
+            reply_to_user(event, vk_get_api, project_dialogflow_id, language_code)
 
 
 if __name__ == '__main__':
