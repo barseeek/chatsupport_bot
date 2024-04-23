@@ -1,6 +1,5 @@
 import logging
 
-import environs
 from telegram import Bot
 
 

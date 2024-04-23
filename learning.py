@@ -1,10 +1,8 @@
 import argparse
 import json
-from pathlib import Path
-
-from environs import Env
 
 from dialogflow import create_intent, read_credentials
+from environs import Env
 
 
 def learn_chat_bot(project_id, filepath):
@@ -25,5 +23,4 @@ if __name__ == "__main__":
     env = Env()
     env.read_env()
     project_id = read_credentials(env.str('GOOGLE_APPLICATION_CREDENTIALS'))['quota_project_id']
-    filepath = Path('questions.json')
-    learn_chat_bot(project_id, filepath)
+    learn_chat_bot(project_id, args.filepath)

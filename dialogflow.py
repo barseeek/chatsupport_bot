@@ -1,9 +1,7 @@
 import json
 import logging
 
-from environs import Env
 from google.cloud import api_keys_v2
-from google.cloud import dialogflow
 from google.cloud.api_keys_v2 import Key
 from google.cloud import dialogflow
 
