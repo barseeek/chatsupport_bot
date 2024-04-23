@@ -2,11 +2,12 @@ import logging
 import random
 
 import vk_api
-from environs import Env
-from vk_api.longpoll import VkLongPoll, VkEventType
 
+from environs import Env
 from dialogflow import read_credentials, detect_intent_texts
 from log import TelegramLogsHandler
+from vk_api.longpoll import VkLongPoll, VkEventType
+
 
 logger = logging.getLogger('bot')
 
@@ -26,6 +27,14 @@ def reply_to_user(event, vk_api, project_id, language_code):
 
 
 def main():
+    env = Env()
+    env.read_env()
+
+    telegram_log_token = env.str('TELEGRAM_LOG_BOT_TOKEN')
+    chat_id = env.str('TELEGRAM_CHAT_ID')
+    tg_handler = TelegramLogsHandler(chat_id, telegram_log_token)
+    logger.setLevel(env.str('LOG_LEVEL', 'INFO'))
+    logger.addHandler(tg_handler)
 
     project_dialogflow_id = read_credentials(env.str('GOOGLE_APPLICATION_CREDENTIALS'))['quota_project_id']
     language_code = env.str('LANGUAGE_CODE')
@@ -39,13 +48,4 @@ def main():
 
 
 if __name__ == '__main__':
-    env = Env()
-    env.read_env()
-
-    telegram_log_token = env.str('TELEGRAM_LOG_BOT_TOKEN')
-    chat_id = env.str('TELEGRAM_CHAT_ID')
-    tg_handler = TelegramLogsHandler(chat_id, telegram_log_token)
-    logger.setLevel(env.str('LOG_LEVEL', 'INFO'))
-    logger.addHandler(tg_handler)
-
     main()
